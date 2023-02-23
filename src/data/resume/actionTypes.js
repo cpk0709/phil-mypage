@@ -1,0 +1,11 @@
+export const RESUME_LOAD = "RESUME_LOAD";
+export const RESUME_CREATE = "RESUME_CREATE";
+export const RESUME_UPDATE = "RESUME_UPDATE";
+export const RESUME_DELETE = "RESUME_DELETE";
+
+export default {
+  RESUME_LOAD,
+  RESUME_CREATE,
+  RESUME_UPDATE,
+  RESUME_DELETE,
+};
