@@ -5,7 +5,7 @@ import SelectBox from "../../components/SelectBox";
 import InputLabelSet from "../../components/input/InputLabelSet";
 import ButtonLikeInput from "../../components/button/ButtonLikeInput";
 import SkillSelectModal from "../../components/Modal/SkillSelectModal";
-import Button from "../../components/button/Button";
+import Today from "../../components/Today";
 import CheckBox from "../../components/CheckBox";
 import Label from "../../components/Label";
 
@@ -40,6 +40,8 @@ const Resume = () => {
   return (
     <Container>
       <Title>resume main</Title>
+      <Today />
+      <Margin />
       <SelectBox dataArray={myResume} setResume={setResume} />
       <h2>선택한 이력 : {resume}</h2>
       <Margin />
