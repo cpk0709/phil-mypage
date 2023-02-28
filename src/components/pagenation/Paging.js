@@ -14,7 +14,6 @@ export default function Paging() {
   const [totalItemCount, setTotalItemCount] = useState(153);
   // 총 페이지 수
   const [totalPage, setTotalPage] = useState([]);
-  console.log(totalPage);
   // 현재 페이지 수
   const [currentPage, setCurrentPage] = useState(1);
   // 현제 페이지가 속한 페이지 범위
@@ -23,7 +22,7 @@ export default function Paging() {
   // 나눈 나머지 값이 1 이상이면 >> 버튼 보여줌
   // 1 -> 1~10 , 2 -> 11~20 , 3 -> 21~30 ...
   const [totalPageRange, setTotalPageRange] = useState();
-  const [currentPageRange, setCurrentPageRange] = useState();
+  const [currentPageRange, setCurrentPageRange] = useState([]);
 
   const handleChangeCurrentPage = (index) => setCurrentPage(index);
 
@@ -49,6 +48,11 @@ export default function Paging() {
     });
   };
 
+  const handleChangeCurrentPageRange = (value) => {
+    // PREV_RANGE 버튼 누른경우
+    // NEXT_RANGE 버튼 누른경우
+  };
+
   // 전체 페이지 수 set
   useEffect(() => {
     if (totalItemCount % PAGE_RANGE === 0) {
@@ -58,6 +62,12 @@ export default function Paging() {
           (value, index) => index + 1
         )
       );
+      setCurrentPageRange(
+        Array.from(
+          { length: totalItemCount / PAGE_RANGE },
+          (value, index) => index + 1
+        ).slice(0, PAGE_RANGE)
+      );
     } else {
       setTotalPage(
         Array.from(
@@ -65,25 +75,57 @@ export default function Paging() {
           (value, index) => index + 1
         )
       );
+      setCurrentPageRange(
+        Array.from(
+          { length: Math.floor(totalItemCount / PAGE_RANGE) + 1 },
+          (value, index) => index + 1
+        ).slice(
+          0,
+          Array.from(
+            { length: Math.floor(totalItemCount / PAGE_RANGE) + 1 },
+            (value, index) => index + 1
+          ).length > 10
+            ? PAGE_RANGE
+            : Array.from(
+                { length: Math.floor(totalItemCount / PAGE_RANGE) + 1 },
+                (value, index) => index + 1
+              ).length
+        )
+      );
     }
   }, [totalItemCount]);
   // 전체 페이지 범위 set
   useEffect(() => {
-    if (!totalPage) return;
+    if (!totalPage?.length === 0) return;
     if (totalPage % PAGE_RANGE === 0) {
-      setTotalPageRange(totalPage / PAGE_RANGE);
-      setCurrentPageRange(1);
+      setTotalPageRange(totalPage?.length / PAGE_RANGE);
+      // setCurrentPageRange(totalPage?.slice(0, PAGE_RANGE));
     } else {
-      setTotalPageRange(Math.floor(totalPage / PAGE_RANGE) + 1);
-      setCurrentPageRange(1);
+      setTotalPageRange(Math.floor(totalPage?.length / PAGE_RANGE) + 1);
+      // setCurrentPageRange(totalPage?.slice(0, totalPage));
     }
   }, [totalPage]);
+
+  useEffect(() => {
+    if (
+      currentPage % PAGE_RANGE === 1 &&
+      currentPage !== 1 &&
+      totalPage.indexOf(currentPage + 1) !== -1
+    ) {
+      setCurrentPageRange(totalPage?.slice(currentPage - 1, currentPage + 10));
+    }
+    if (currentPage % PAGE_RANGE === 0) {
+      setCurrentPageRange(totalPage?.slice(currentPage - 10, currentPage));
+    }
+  }, [currentPage]);
 
   return (
     <div>
       <h3>Paging</h3>
       <div style={{ display: "flex", alignItems: "center" }}>
-        <PageRangeButton>PREV_RANGE</PageRangeButton>
+        <PageRangeButton onClick={() => handleChangeCurrentPageRange("prev")}>
+          PREV_RANGE
+        </PageRangeButton>
         <PageRangeButton onClick={() => handleChangeCurrentPageByBtn("prev")}>
           PREV
         </PageRangeButton>
@@ -99,7 +141,7 @@ export default function Paging() {
               {index + 1}
             </EachPage>
           ))} */}
-          {totalPage?.map((page, index) => {
+          {currentPageRange?.map((page, index) => {
             return (
               <EachPage
                 key={page}
@@ -115,7 +157,9 @@ export default function Paging() {
         <PageRangeButton onClick={() => handleChangeCurrentPageByBtn("next")}>
           NEXT
         </PageRangeButton>
-        <PageRangeButton>NEXT_RANGE</PageRangeButton>
+        <PageRangeButton onClick={() => handleChangeCurrentPageRange("next")}>
+          NEXT_RANGE
+        </PageRangeButton>
       </div>
     </div>
   );
