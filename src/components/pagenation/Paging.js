@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 // 전체 게시물의 수
 // 페이지당 보여줄 게시물의 수 10
-// 전체 페이지를 보여 줄 범위 1~10
+// 페이지 보여 줄 범위 1~10
 // 현재 페이지
 
 export default function Paging() {
@@ -14,22 +14,35 @@ export default function Paging() {
   // 현재 페이지 수
   const [currentPage, setCurrentPage] = useState(1);
   // 현제 페이지가 속한 페이지 범위
+  // 총 페이지 수 / 페이지 보여줄 범위(10)
+  // 나눈 나머지 값이 1이하이면 >> 버튼 필요없음
+  // 나눈 나머지 값이 1 이상이면 >> 버튼 보여줌
+  // 현재페이지는 어느 범위에 속하는지... 생각해볼 문제
+  // 1 -> 1~10 , 2 -> 11~20 , 3 -> 21~30 ...
   const [currentRange, setCurrentRange] = useState();
 
   const handleChangeCurrentPage = (index) => setCurrentPage(index);
 
   const handleChangeCurrentPageByBtn = (value) => {
+    //PREV 버튼 누른경우
     if (value === "prev") {
       setCurrentPage((prev) => {
         if (prev - 1 === 0) {
           alert("There is no page under 1");
-          return 1;
+          return prev;
         }
         return prev - 1;
       });
       return;
     }
-    setCurrentPage((prev) => prev + 1);
+    // NEXT 버튼 누른경우
+    setCurrentPage((prev) => {
+      if (prev + 1 > totalPageRange) {
+        alert(`There is no page over ${totalPageRange}`);
+        return prev;
+      }
+      return prev + 1;
+    });
   };
 
   useEffect(() => {
