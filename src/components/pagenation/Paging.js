@@ -3,14 +3,17 @@ import styled from "styled-components";
 
 // 전체 게시물의 수
 // 페이지당 보여줄 게시물의 수 10
-// 페이지 보여 줄 범위 1~10
+// 총 페이지 수
 // 현재 페이지
+// 페이지 보여 줄 범위 1~10
+
+const PAGE_RANGE = 10;
 
 export default function Paging() {
   // 전체 아이템 수
   const [totalItemCount, setTotalItemCount] = useState(153);
   // 총 페이지 수
-  const [totalPageRange, setTotalPageRange] = useState();
+  const [totalPage, setTotalPage] = useState();
   // 현재 페이지 수
   const [currentPage, setCurrentPage] = useState(1);
   // 현제 페이지가 속한 페이지 범위
@@ -19,7 +22,7 @@ export default function Paging() {
   // 나눈 나머지 값이 1 이상이면 >> 버튼 보여줌
   // 현재페이지는 어느 범위에 속하는지... 생각해볼 문제
   // 1 -> 1~10 , 2 -> 11~20 , 3 -> 21~30 ...
-  const [currentRange, setCurrentRange] = useState();
+  const [totalPageRange, setTotalPageRange] = useState();
 
   const handleChangeCurrentPage = (index) => setCurrentPage(index);
 
@@ -37,8 +40,8 @@ export default function Paging() {
     }
     // NEXT 버튼 누른경우
     setCurrentPage((prev) => {
-      if (prev + 1 > totalPageRange) {
-        alert(`There is no page over ${totalPageRange}`);
+      if (prev + 1 > totalPage) {
+        alert(`There is no page over ${totalPage}`);
         return prev;
       }
       return prev + 1;
@@ -46,23 +49,34 @@ export default function Paging() {
   };
 
   useEffect(() => {
-    if (totalItemCount % 10 === 0) {
-      setTotalPageRange(totalItemCount / 10);
+    if (totalItemCount % PAGE_RANGE === 0) {
+      setTotalPage(totalItemCount / PAGE_RANGE);
     } else {
-      setTotalPageRange(Math.floor(totalItemCount / 10) + 1);
+      setTotalPage(Math.floor(totalItemCount / PAGE_RANGE) + 1);
     }
   }, [totalItemCount]);
+
+  useEffect(() => {
+    if (!totalPage) return;
+    if (totalPage % PAGE_RANGE === 0) {
+      setTotalPageRange(totalPage / PAGE_RANGE);
+    } else {
+      setTotalPageRange(Math.floor(totalPage / PAGE_RANGE) + 1);
+    }
+  }, [totalPage]);
 
   return (
     <div>
       <h3>Paging</h3>
       <div style={{ display: "flex", alignItems: "center" }}>
+        <PageRangeButton>PREV_RANGE</PageRangeButton>
         <PageRangeButton onClick={() => handleChangeCurrentPageByBtn("prev")}>
           PREV
         </PageRangeButton>
         <div style={{ display: "flex" }}>
-          {Array.from({ length: totalPageRange }, (page, index) => (
+          {Array.from({ length: totalPage }, (page, index) => (
             <EachPage
+              key={index}
               currentPage={currentPage}
               idx={index + 1}
               onClick={() => handleChangeCurrentPage(index + 1)}
@@ -74,6 +88,7 @@ export default function Paging() {
         <PageRangeButton onClick={() => handleChangeCurrentPageByBtn("next")}>
           NEXT
         </PageRangeButton>
+        <PageRangeButton>NEXT_RANGE</PageRangeButton>
       </div>
     </div>
   );
