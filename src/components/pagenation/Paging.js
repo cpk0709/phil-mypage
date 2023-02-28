@@ -13,16 +13,17 @@ export default function Paging() {
   // 전체 아이템 수
   const [totalItemCount, setTotalItemCount] = useState(153);
   // 총 페이지 수
-  const [totalPage, setTotalPage] = useState();
+  const [totalPage, setTotalPage] = useState([]);
+  console.log(totalPage);
   // 현재 페이지 수
   const [currentPage, setCurrentPage] = useState(1);
   // 현제 페이지가 속한 페이지 범위
   // 총 페이지 수 / 페이지 보여줄 범위(10)
   // 나눈 나머지 값이 1이하이면 >> 버튼 필요없음
   // 나눈 나머지 값이 1 이상이면 >> 버튼 보여줌
-  // 현재페이지는 어느 범위에 속하는지... 생각해볼 문제
   // 1 -> 1~10 , 2 -> 11~20 , 3 -> 21~30 ...
   const [totalPageRange, setTotalPageRange] = useState();
+  const [currentPageRange, setCurrentPageRange] = useState();
 
   const handleChangeCurrentPage = (index) => setCurrentPage(index);
 
@@ -40,28 +41,41 @@ export default function Paging() {
     }
     // NEXT 버튼 누른경우
     setCurrentPage((prev) => {
-      if (prev + 1 > totalPage) {
-        alert(`There is no page over ${totalPage}`);
+      if (prev + 1 > totalPage[totalPage?.length - 1]) {
+        alert(`There is no page over ${totalPage[totalPage?.length - 1]}`);
         return prev;
       }
       return prev + 1;
     });
   };
 
+  // 전체 페이지 수 set
   useEffect(() => {
     if (totalItemCount % PAGE_RANGE === 0) {
-      setTotalPage(totalItemCount / PAGE_RANGE);
+      setTotalPage(
+        Array.from(
+          { length: totalItemCount / PAGE_RANGE },
+          (value, index) => index + 1
+        )
+      );
     } else {
-      setTotalPage(Math.floor(totalItemCount / PAGE_RANGE) + 1);
+      setTotalPage(
+        Array.from(
+          { length: Math.floor(totalItemCount / PAGE_RANGE) + 1 },
+          (value, index) => index + 1
+        )
+      );
     }
   }, [totalItemCount]);
-
+  // 전체 페이지 범위 set
   useEffect(() => {
     if (!totalPage) return;
     if (totalPage % PAGE_RANGE === 0) {
       setTotalPageRange(totalPage / PAGE_RANGE);
+      setCurrentPageRange(1);
     } else {
       setTotalPageRange(Math.floor(totalPage / PAGE_RANGE) + 1);
+      setCurrentPageRange(1);
     }
   }, [totalPage]);
 
@@ -74,7 +88,8 @@ export default function Paging() {
           PREV
         </PageRangeButton>
         <div style={{ display: "flex" }}>
-          {Array.from({ length: totalPage }, (page, index) => (
+          {/* 전체 페이지에서 현재페이지범위에 속한 부분만 보여줌 */}
+          {/* {Array.from({ length: totalPage }, (page, index) => (
             <EachPage
               key={index}
               currentPage={currentPage}
@@ -83,7 +98,19 @@ export default function Paging() {
             >
               {index + 1}
             </EachPage>
-          ))}
+          ))} */}
+          {totalPage?.map((page, index) => {
+            return (
+              <EachPage
+                key={page}
+                currentPage={currentPage}
+                idx={page}
+                onClick={() => handleChangeCurrentPage(page)}
+              >
+                {page}
+              </EachPage>
+            );
+          })}
         </div>
         <PageRangeButton onClick={() => handleChangeCurrentPageByBtn("next")}>
           NEXT
