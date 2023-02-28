@@ -8,6 +8,7 @@ import SkillSelectModal from "../../components/Modal/SkillSelectModal";
 import Today from "../../components/Today";
 import CheckBox from "../../components/CheckBox";
 import Label from "../../components/Label";
+import Paging from "../../components/pagenation/Paging";
 
 const Margin = ({ customHeight }) => (
   <div style={{ height: "30px", ...customHeight }} />
@@ -113,6 +114,10 @@ const Resume = () => {
           }
         />
       )}
+      <Margin />
+      <div style={{ border: "1px solid #999", padding: "20px" }}>
+        <Paging />
+      </div>
     </Container>
   );
 };
