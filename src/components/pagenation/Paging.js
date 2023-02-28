@@ -11,7 +11,7 @@ const PAGE_RANGE = 10;
 
 export default function Paging() {
   // 전체 아이템 수
-  const [totalItemCount, setTotalItemCount] = useState(153);
+  const [totalItemCount, setTotalItemCount] = useState(321);
   // 총 페이지 수
   const [totalPage, setTotalPage] = useState([]);
   // 현재 페이지 수
@@ -50,7 +50,34 @@ export default function Paging() {
 
   const handleChangeCurrentPageRange = (value) => {
     // PREV_RANGE 버튼 누른경우
+    if (value === "prev") {
+      if (currentPage <= 10) {
+        alert("There is no Page under 1");
+        return;
+      }
+      setCurrentPageRange(
+        totalPage?.slice(currentPageRange[0] - 11, currentPageRange[0] - 1)
+      );
+      setCurrentPage(currentPageRange[0] - 10);
+      return;
+    }
     // NEXT_RANGE 버튼 누른경우
+    if (
+      totalPage.indexOf(currentPageRange[currentPageRange.length - 1] + 1) ===
+      -1
+    ) {
+      alert(
+        `There is no Page over ${currentPageRange[currentPageRange.length - 1]}`
+      );
+      return;
+    }
+    setCurrentPageRange(
+      totalPage?.slice(
+        currentPageRange[currentPageRange.length - 1] + 1,
+        currentPageRange[currentPageRange.length - 1] + 11
+      )
+    );
+    setCurrentPage(currentPageRange[currentPageRange.length - 1] + 1);
   };
 
   // 전체 페이지 수 set
@@ -95,27 +122,31 @@ export default function Paging() {
     }
   }, [totalItemCount]);
   // 전체 페이지 범위 set
-  useEffect(() => {
-    if (!totalPage?.length === 0) return;
-    if (totalPage % PAGE_RANGE === 0) {
-      setTotalPageRange(totalPage?.length / PAGE_RANGE);
-      // setCurrentPageRange(totalPage?.slice(0, PAGE_RANGE));
-    } else {
-      setTotalPageRange(Math.floor(totalPage?.length / PAGE_RANGE) + 1);
-      // setCurrentPageRange(totalPage?.slice(0, totalPage));
-    }
-  }, [totalPage]);
+  // useEffect(() => {
+  //   if (!totalPage?.length === 0) return;
+  //   if (totalPage % PAGE_RANGE === 0) {
+  //     setTotalPageRange(totalPage?.length / PAGE_RANGE);
+  //     // setCurrentPageRange(totalPage?.slice(0, PAGE_RANGE));
+  //   } else {
+  //     setTotalPageRange(Math.floor(totalPage?.length / PAGE_RANGE) + 1);
+  //     // setCurrentPageRange(totalPage?.slice(0, totalPage));
+  //   }
+  // }, [totalPage]);
 
   useEffect(() => {
+    // 다음 페이지 범위로 넘어갈 때
     if (
       currentPage % PAGE_RANGE === 1 &&
       currentPage !== 1 &&
       totalPage.indexOf(currentPage + 1) !== -1
     ) {
-      setCurrentPageRange(totalPage?.slice(currentPage - 1, currentPage + 10));
+      setCurrentPageRange(totalPage?.slice(currentPage - 1, currentPage + 9));
+      return;
     }
+    // 이전 페이지 범위로 넘어갈 때
     if (currentPage % PAGE_RANGE === 0) {
       setCurrentPageRange(totalPage?.slice(currentPage - 10, currentPage));
+      return;
     }
   }, [currentPage]);
 
