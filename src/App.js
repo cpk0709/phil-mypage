@@ -29,7 +29,7 @@ function App() {
         </Link>
       </div>
       <div>
-        <h2>버튼으로 이동</h2>
+        <h2>버튼으로 이동#</h2>
         <button onClick={() => moveToPage("cat", "nabi")}>Cat 이동</button>
         <button onClick={() => moveToPage("dog")}>Dog 이동</button>
       </div>
