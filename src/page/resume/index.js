@@ -60,7 +60,7 @@ const Resume = () => {
         />
       </InputLabelSet>
       <Margin />
-      <button onClick={() => setIsModalOpen(true)}>기술스택 모달 열기</button>
+      <button onClick={() => setIsModalOpen(true)}>기술스택 모달 OPEN</button>
       <Margin />
 
       <AgreeCheckWrapper>
